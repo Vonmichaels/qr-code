@@ -8,17 +8,36 @@ const DEFAULTS = {
   name: '',
   title: '',
   familyCount: 0,
+  kids: [],
   notes: '',
 }
 
 export default function GuestForm({ existing, onClose }) {
-  const [form, setForm] = useState(existing ? { ...existing } : { ...DEFAULTS })
+  const [form, setForm] = useState(existing ? { ...existing, kids: existing.kids || [] } : { ...DEFAULTS })
   const [errors, setErrors] = useState({})
 
   function set(key, value) {
     setForm(f => ({ ...f, [key]: value }))
     setErrors(e => ({ ...e, [key]: undefined }))
   }
+
+  function addKid() {
+    setForm(f => ({ ...f, kids: [...f.kids, ''] }))
+  }
+
+  function updateKid(index, value) {
+    setForm(f => {
+      const kids = [...f.kids]
+      kids[index] = value
+      return { ...f, kids }
+    })
+  }
+
+  function removeKid(index) {
+    setForm(f => ({ ...f, kids: f.kids.filter((_, i) => i !== index) }))
+  }
+
+  const totalPax = 1 + Number(form.familyCount || 0) + form.kids.length
 
   function validate() {
     const errs = {}
@@ -36,6 +55,7 @@ export default function GuestForm({ existing, onClose }) {
       ...form,
       id: existing?.id || generateId(),
       familyCount: Number(form.familyCount),
+      kids: form.kids.map(k => k.trim()).filter(Boolean),
       eventName: EVENT_NAME,
       eventDate: EVENT_DATE,
       createdAt: existing?.createdAt || new Date().toISOString(),
@@ -60,7 +80,8 @@ export default function GuestForm({ existing, onClose }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
+          {/* Guest info */}
           <div>
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">Guest Information</p>
             <div className="space-y-3">
@@ -74,9 +95,9 @@ export default function GuestForm({ existing, onClose }) {
                 />
               </Field>
 
-              <Field label="Title / Relation" error={errors.title}>
+              <Field label="Title / Relation">
                 <input
-                  className={input(errors.title)}
+                  className={input()}
                   value={form.title}
                   onChange={e => set('title', e.target.value)}
                   placeholder="Classmate, Tita, Ninong..."
@@ -84,7 +105,7 @@ export default function GuestForm({ existing, onClose }) {
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Additional Family Members" error={errors.familyCount}>
+                <Field label="Additional Adults" error={errors.familyCount}>
                   <input
                     type="number"
                     min="0"
@@ -96,12 +117,69 @@ export default function GuestForm({ existing, onClose }) {
                 </Field>
                 <div className="bg-indigo-50 rounded-xl px-4 py-2 flex flex-col justify-center">
                   <span className="text-xs text-indigo-500 font-medium">Total Pax</span>
-                  <span className="text-xl font-bold text-indigo-700">{1 + Number(form.familyCount || 0)}</span>
+                  <span className="text-xl font-bold text-indigo-700">{totalPax}</span>
+                  {form.kids.length > 0 && (
+                    <span className="text-xs text-pink-400">{form.kids.length} kid{form.kids.length > 1 ? 's' : ''} included</span>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Kids section */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold text-pink-500 uppercase tracking-widest">Kids Attending</p>
+              <button
+                type="button"
+                onClick={addKid}
+                className="flex items-center gap-1 text-xs font-medium text-pink-500 hover:text-pink-700 bg-pink-50 hover:bg-pink-100 px-2.5 py-1 rounded-lg transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add Kid
+              </button>
+            </div>
+
+            {form.kids.length === 0 ? (
+              <button
+                type="button"
+                onClick={addKid}
+                className="w-full border-2 border-dashed border-pink-200 rounded-xl py-3 text-xs text-pink-400 hover:border-pink-300 hover:text-pink-500 transition-colors"
+              >
+                + Add a kid's name (they'll be counted in total pax)
+              </button>
+            ) : (
+              <div className="space-y-2">
+                {form.kids.map((kid, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                      <span className="text-xs">🎂</span>
+                    </div>
+                    <input
+                      className="flex-1 px-3 py-2 rounded-xl border border-pink-200 focus:border-pink-400 bg-pink-50 focus:bg-white text-sm outline-none transition-colors"
+                      value={kid}
+                      onChange={e => updateKid(i, e.target.value)}
+                      placeholder={`Kid ${i + 1} name`}
+                      autoFocus={kid === ''}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeKid(i)}
+                      className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Notes */}
           <Field label="Special Notes">
             <textarea
               className={`${input()} resize-none`}
@@ -112,7 +190,7 @@ export default function GuestForm({ existing, onClose }) {
             />
           </Field>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-1">
             <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">
               Cancel
             </button>

@@ -23,7 +23,8 @@ export default function GuestPage({ guest }) {
     )
   }
 
-  const totalPax = 1 + (guest.familyCount || 0)
+  const kids = guest.kids || []
+  const totalPax = 1 + (guest.familyCount || 0) + kids.length
   const eventDate = guest.eventDate
     ? new Date(guest.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
     : null
@@ -58,7 +59,7 @@ export default function GuestPage({ guest }) {
             )}
 
             {/* Guest name */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-5">
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl font-bold text-indigo-600">
                   {guest.name.charAt(0).toUpperCase()}
@@ -68,7 +69,7 @@ export default function GuestPage({ guest }) {
               {guest.title && <p className="text-gray-500 text-sm mt-1">{guest.title}</p>}
             </div>
 
-            {/* Total Pax — full width, prominent */}
+            {/* Total Pax */}
             <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shrink-0">
                 <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,9 +78,28 @@ export default function GuestPage({ guest }) {
               </div>
               <div>
                 <p className="text-xs text-indigo-500 font-medium uppercase tracking-wide">Total Pax</p>
-                <p className="text-2xl font-bold text-indigo-700">{totalPax} <span className="text-sm font-medium">{totalPax === 1 ? 'person' : 'persons'}</span></p>
+                <p className="text-2xl font-bold text-indigo-700">
+                  {totalPax} <span className="text-sm font-medium">{totalPax === 1 ? 'person' : 'persons'}</span>
+                </p>
+                {kids.length > 0 && (
+                  <p className="text-xs text-pink-400 mt-0.5">includes {kids.length} kid{kids.length > 1 ? 's' : ''}</p>
+                )}
               </div>
             </div>
+
+            {/* Kids list */}
+            {kids.length > 0 && (
+              <div className="bg-pink-50 border border-pink-100 rounded-xl p-3 mb-4">
+                <p className="text-xs text-pink-500 font-semibold uppercase tracking-wide mb-2">Kids Attending</p>
+                <div className="flex flex-wrap gap-2">
+                  {kids.map((kid, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 bg-white border border-pink-200 text-pink-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                      🎂 {kid}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Notes */}
             {guest.notes && (

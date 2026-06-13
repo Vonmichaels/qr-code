@@ -3,7 +3,8 @@ import { encodeGuest } from '../utils/storage.js'
 
 export default function GuestCard({ guest, onEdit, onDelete, onPreview }) {
   const guestUrl = `${window.location.origin}${window.location.pathname}?guest=${encodeGuest(guest)}`
-  const totalPax = 1 + (guest.familyCount || 0)
+  const kids = guest.kids || []
+  const totalPax = 1 + (guest.familyCount || 0) + kids.length
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow overflow-hidden">
@@ -12,6 +13,11 @@ export default function GuestCard({ guest, onEdit, onDelete, onPreview }) {
           <div>
             <h3 className="font-bold text-gray-900 text-base leading-tight">{guest.name}</h3>
             {guest.title && <p className="text-xs text-gray-400 mt-0.5">{guest.title}</p>}
+            {kids.length > 0 && (
+              <p className="text-xs text-pink-400 mt-0.5">
+                🎂 {kids.join(', ')}
+              </p>
+            )}
           </div>
           <div className="shrink-0 bg-gray-50 border border-gray-100 rounded-xl p-2 cursor-pointer" onClick={onPreview}>
             <QRCodeSVG value={guestUrl} size={64} level="M" />

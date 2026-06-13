@@ -6,7 +6,8 @@ import { encodeGuest } from '../utils/storage.js'
 export default function InviteModal({ guest, onClose }) {
   const cardRef = useRef(null)
   const guestUrl = `${window.location.origin}${window.location.pathname}?guest=${encodeGuest(guest)}`
-  const totalPax = 1 + (guest.familyCount || 0)
+  const kids = guest.kids || []
+  const totalPax = 1 + (guest.familyCount || 0) + kids.length
 
   async function handleDownload() {
     if (!cardRef.current) return
@@ -77,7 +78,7 @@ export default function InviteModal({ guest, onClose }) {
                 </p>
               </div>
 
-              {/* Guest info below QR */}
+              {/* Guest info */}
               <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                   <p style={{ color: '#64748b', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '4px' }}>
@@ -91,7 +92,7 @@ export default function InviteModal({ guest, onClose }) {
                   )}
                 </div>
 
-                {/* Total Pax pill */}
+                {/* Total Pax */}
                 <div style={{ background: '#eef2ff', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   <div style={{ width: '36px', height: '36px', background: '#6366f1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2">
@@ -103,8 +104,27 @@ export default function InviteModal({ guest, onClose }) {
                     <p style={{ color: '#1e293b', fontSize: '18px', fontWeight: '800', margin: 0 }}>
                       {totalPax} <span style={{ fontSize: '12px', fontWeight: '500', color: '#6366f1' }}>{totalPax === 1 ? 'person' : 'persons'}</span>
                     </p>
+                    {kids.length > 0 && (
+                      <p style={{ color: '#f472b6', fontSize: '10px', margin: '2px 0 0' }}>includes {kids.length} kid{kids.length > 1 ? 's' : ''}</p>
+                    )}
                   </div>
                 </div>
+
+                {/* Kids list */}
+                {kids.length > 0 && (
+                  <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', borderRadius: '10px', padding: '10px 12px', marginBottom: '8px' }}>
+                    <p style={{ color: '#db2777', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
+                      Kids Attending
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                      {kids.map((kid, i) => (
+                        <span key={i} style={{ background: '#fff', border: '1px solid #fbcfe8', color: '#be185d', fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '999px' }}>
+                          🎂 {kid}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {guest.notes && (
                   <div style={{ marginTop: '8px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '10px 12px' }}>
