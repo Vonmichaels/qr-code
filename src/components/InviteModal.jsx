@@ -1,10 +1,11 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import html2canvas from 'html2canvas'
 import { encodeGuest } from '../utils/storage.js'
 
-export default function InviteModal({ guest, onClose }) {
+export default function InviteModal({ guest, onClose, onDelete }) {
   const cardRef = useRef(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const guestUrl = `${window.location.origin}${window.location.pathname}?guest=${encodeGuest(guest)}`
   const kids = guest.kids || []
   const totalPax = 1 + (guest.familyCount || 0) + kids.length
@@ -145,8 +146,30 @@ export default function InviteModal({ guest, onClose }) {
           </div>
         </div>
 
+        {/* Confirm delete banner */}
+        {confirmDelete && (
+          <div className="mx-6 mb-4 bg-red-50 border border-red-200 rounded-xl p-4">
+            <p className="text-sm font-semibold text-red-700 mb-1">Delete this invitation?</p>
+            <p className="text-xs text-red-500 mb-3">This cannot be undone. The QR code will stop working.</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 py-2 rounded-lg border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex-1 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-semibold transition-colors"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Action buttons */}
-        <div className="px-6 pb-6 grid grid-cols-3 gap-3">
+        <div className="px-6 pb-6 grid grid-cols-4 gap-2">
           <button
             onClick={handleDownload}
             className="flex flex-col items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 rounded-xl transition-colors text-xs font-medium"
@@ -173,6 +196,15 @@ export default function InviteModal({ guest, onClose }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             Print
+          </button>
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="flex flex-col items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 py-3 rounded-xl transition-colors text-xs font-medium"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Delete
           </button>
         </div>
       </div>

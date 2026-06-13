@@ -113,6 +113,7 @@ export default function AdminPage() {
         <InviteModal
           guest={previewGuest}
           onClose={() => setPreviewGuest(null)}
+          onDelete={() => { handleDelete(previewGuest.id); setPreviewGuest(null) }}
         />
       )}
     </div>
