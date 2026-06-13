@@ -23,8 +23,9 @@ export default function GuestPage({ guest }) {
     )
   }
 
+  const familyMembers = guest.familyMembers || []
   const kids = guest.kids || []
-  const totalPax = 1 + (guest.familyCount || 0) + kids.length
+  const totalPax = 1 + (familyMembers.length || guest.familyCount || 0) + kids.length
   const eventDate = guest.eventDate
     ? new Date(guest.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
     : null
@@ -81,15 +82,37 @@ export default function GuestPage({ guest }) {
                 <p className="text-2xl font-bold text-indigo-700">
                   {totalPax} <span className="text-sm font-medium">{totalPax === 1 ? 'person' : 'persons'}</span>
                 </p>
-                {kids.length > 0 && (
-                  <p className="text-xs text-pink-400 mt-0.5">includes {kids.length} kid{kids.length > 1 ? 's' : ''}</p>
-                )}
+                <div className="flex gap-2 mt-0.5">
+                  {familyMembers.length > 0 && (
+                    <span className="text-xs text-teal-500">{familyMembers.length} family</span>
+                  )}
+                  {familyMembers.length > 0 && kids.length > 0 && (
+                    <span className="text-xs text-gray-300">·</span>
+                  )}
+                  {kids.length > 0 && (
+                    <span className="text-xs text-pink-400">{kids.length} kid{kids.length > 1 ? 's' : ''}</span>
+                  )}
+                </div>
               </div>
             </div>
 
+            {/* Family members list */}
+            {familyMembers.length > 0 && (
+              <div className="bg-teal-50 border border-teal-100 rounded-xl p-3 mb-3">
+                <p className="text-xs text-teal-600 font-semibold uppercase tracking-wide mb-2">Family Members</p>
+                <div className="flex flex-wrap gap-2">
+                  {familyMembers.map((member, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 bg-white border border-teal-200 text-teal-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                      👤 {member}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Kids list */}
             {kids.length > 0 && (
-              <div className="bg-pink-50 border border-pink-100 rounded-xl p-3 mb-4">
+              <div className="bg-pink-50 border border-pink-100 rounded-xl p-3 mb-3">
                 <p className="text-xs text-pink-500 font-semibold uppercase tracking-wide mb-2">Kids Attending</p>
                 <div className="flex flex-wrap gap-2">
                   {kids.map((kid, i) => (

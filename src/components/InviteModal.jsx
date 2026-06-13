@@ -7,8 +7,9 @@ export default function InviteModal({ guest, onClose, onDelete }) {
   const cardRef = useRef(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const guestUrl = `${window.location.origin}${window.location.pathname}?guest=${encodeGuest(guest)}`
+  const familyMembers = guest.familyMembers || []
   const kids = guest.kids || []
-  const totalPax = 1 + (guest.familyCount || 0) + kids.length
+  const totalPax = 1 + (familyMembers.length || guest.familyCount || 0) + kids.length
 
   async function handleDownload() {
     if (!cardRef.current) return
@@ -105,11 +106,31 @@ export default function InviteModal({ guest, onClose, onDelete }) {
                     <p style={{ color: '#1e293b', fontSize: '18px', fontWeight: '800', margin: 0 }}>
                       {totalPax} <span style={{ fontSize: '12px', fontWeight: '500', color: '#6366f1' }}>{totalPax === 1 ? 'person' : 'persons'}</span>
                     </p>
-                    {kids.length > 0 && (
-                      <p style={{ color: '#f472b6', fontSize: '10px', margin: '2px 0 0' }}>includes {kids.length} kid{kids.length > 1 ? 's' : ''}</p>
+                    {(familyMembers.length > 0 || kids.length > 0) && (
+                      <p style={{ color: '#94a3b8', fontSize: '10px', margin: '2px 0 0' }}>
+                        {familyMembers.length > 0 ? `${familyMembers.length} family` : ''}
+                        {familyMembers.length > 0 && kids.length > 0 ? ' · ' : ''}
+                        {kids.length > 0 ? `${kids.length} kid${kids.length > 1 ? 's' : ''}` : ''}
+                      </p>
                     )}
                   </div>
                 </div>
+
+                {/* Family members list */}
+                {familyMembers.length > 0 && (
+                  <div style={{ background: '#f0fdfa', border: '1px solid #99f6e4', borderRadius: '10px', padding: '10px 12px', marginBottom: '8px' }}>
+                    <p style={{ color: '#0d9488', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>
+                      Family Members
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                      {familyMembers.map((member, i) => (
+                        <span key={i} style={{ background: '#fff', border: '1px solid #99f6e4', color: '#0f766e', fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '999px' }}>
+                          👤 {member}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Kids list */}
                 {kids.length > 0 && (

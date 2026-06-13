@@ -3,18 +3,25 @@ import { encodeGuest } from '../utils/storage.js'
 
 export default function GuestCard({ guest, onEdit, onDelete, onPreview }) {
   const guestUrl = `${window.location.origin}${window.location.pathname}?guest=${encodeGuest(guest)}`
+  const familyMembers = guest.familyMembers || []
   const kids = guest.kids || []
-  const totalPax = 1 + (guest.familyCount || 0) + kids.length
+  // backward compat: old guests used familyCount number
+  const totalPax = 1 + (familyMembers.length || guest.familyCount || 0) + kids.length
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow overflow-hidden">
       <div className="p-5">
         <div className="flex items-start justify-between mb-4">
-          <div>
+          <div className="flex-1 min-w-0 pr-3">
             <h3 className="font-bold text-gray-900 text-base leading-tight">{guest.name}</h3>
             {guest.title && <p className="text-xs text-gray-400 mt-0.5">{guest.title}</p>}
+            {familyMembers.length > 0 && (
+              <p className="text-xs text-teal-500 mt-0.5 truncate">
+                👨‍👩‍👧 {familyMembers.join(', ')}
+              </p>
+            )}
             {kids.length > 0 && (
-              <p className="text-xs text-pink-400 mt-0.5">
+              <p className="text-xs text-pink-400 mt-0.5 truncate">
                 🎂 {kids.join(', ')}
               </p>
             )}
