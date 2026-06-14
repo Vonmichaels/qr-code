@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { logScan } from '../utils/supabase.js'
 
 export default function GuestPage({ guest }) {
   const [scanned, setScanned] = useState(false)
 
   useEffect(() => {
+    if (guest) logScan(guest)
     setTimeout(() => setScanned(true), 200)
   }, [])
 
