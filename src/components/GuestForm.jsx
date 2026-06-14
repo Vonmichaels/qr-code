@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { saveGuest, generateId } from '../utils/storage.js'
 
-const EVENT_NAME = "7th Birthday of Brando"
+const EVENT_NAME = "7th Birthday of Bran"
 const EVENT_DATE = "2026-07-04"
 
 const DEFAULTS = { name: '', title: '', familyMembers: [], kids: [], notes: '' }

@@ -37,7 +37,7 @@ export default function AdminPage() {
               </svg>
             </div>
             <div>
-              <h1 className="font-display text-white text-lg font-bold leading-tight">Brando's 7th Birthday</h1>
+              <h1 className="font-display text-white text-lg font-bold leading-tight">Bran's 7th Birthday</h1>
               <p className="text-slate-400 text-xs font-medium tracking-widest uppercase mt-0.5">Invitation Management System</p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react'
 import html2canvas from 'html2canvas'
 import { encodeGuest } from '../utils/storage.js'
 
@@ -17,7 +17,9 @@ export default function InviteModal({ guest, onClose, onDelete }) {
     const link = document.createElement('a')
     link.download = `invite-${guest.name.replace(/\s+/g, '-')}.png`
     link.href = canvas.toDataURL('image/png')
+    document.body.appendChild(link)
     link.click()
+    document.body.removeChild(link)
   }
 
   function handleCopyLink() {
@@ -83,7 +85,7 @@ export default function InviteModal({ guest, onClose, onDelete }) {
             {/* QR section */}
             <div style={{ padding: '24px 28px 0', textAlign: 'center' }}>
               <div style={{ display: 'inline-block', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '14px' }}>
-                <QRCodeSVG value={guestUrl} size={150} level="H" includeMargin={false} />
+                <QRCodeCanvas value={guestUrl} size={150} level="H" />
               </div>
               <p style={{ color: '#94a3b8', fontSize: '10px', fontFamily: "'Inter', sans-serif", marginTop: '8px', letterSpacing: '0.05em' }}>
                 Present this QR code at the venue entrance
