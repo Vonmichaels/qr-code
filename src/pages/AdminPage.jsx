@@ -12,52 +12,39 @@ export default function AdminPage() {
   const [editGuest, setEditGuest] = useState(null)
   const [previewGuest, setPreviewGuest] = useState(null)
 
-  function refresh() {
-    setGuests(getGuests())
-  }
-
-  useEffect(() => {
-    refresh()
-  }, [])
+  function refresh() { setGuests(getGuests()) }
+  useEffect(() => { refresh() }, [])
 
   function handleDelete(id) {
-    if (!confirm('Delete this guest invitation?')) return
+    if (!confirm('Remove this guest invitation?')) return
     deleteGuest(id)
     refresh()
   }
 
-  function handleEdit(guest) {
-    setEditGuest(guest)
-    setShowForm(true)
-  }
-
-  function handleFormClose() {
-    setShowForm(false)
-    setEditGuest(null)
-    refresh()
-  }
+  function handleEdit(guest) { setEditGuest(guest); setShowForm(true) }
+  function handleFormClose() { setShowForm(false); setEditGuest(null); refresh() }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-slate-50">
+
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+      <header className="bg-slate-900 shadow-lg">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Invite Manager</h1>
-              <p className="text-xs text-gray-500">9th Birthday of Brando</p>
+              <h1 className="font-display text-white text-lg font-bold leading-tight">Brando's 7th Birthday</h1>
+              <p className="text-slate-400 text-xs font-medium tracking-widest uppercase mt-0.5">Invitation Management System</p>
             </div>
           </div>
-
           {tab === 'guests' && (
             <button
               onClick={() => { setEditGuest(null); setShowForm(true) }}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors"
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -68,11 +55,11 @@ export default function AdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex gap-1">
+        <div className="max-w-6xl mx-auto px-6 border-t border-slate-800">
+          <div className="flex">
             <TabBtn active={tab === 'guests'} onClick={() => setTab('guests')}
-              icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />}
-              label="Guests"
+              icon={<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />}
+              label="Guest List"
               count={guests.length}
             />
             <TabBtn active={tab === 'checkins'} onClick={() => setTab('checkins')}
@@ -84,55 +71,51 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {tab === 'guests' ? (
-          <>
-            {guests.length === 0 ? (
-              <div className="text-center py-24">
-                <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">No guests yet</h2>
-                <p className="text-gray-400 mb-6">Create your first guest invitation with a QR code</p>
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                >
-                  Create First Invitation
-                </button>
+          guests.length === 0 ? (
+            <div className="text-center py-28">
+              <div className="w-20 h-20 bg-amber-50 border border-amber-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg className="w-9 h-9 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-700">
-                    {guests.length} Guest{guests.length !== 1 ? 's' : ''}
-                  </h2>
+              <h2 className="font-display text-2xl font-bold text-slate-800 mb-2">No Invitations Yet</h2>
+              <p className="text-slate-400 mb-7 text-sm">Create your first guest invitation to get started</p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="bg-slate-900 hover:bg-slate-800 text-white px-7 py-3 rounded-lg font-semibold text-sm transition-colors"
+              >
+                Create First Invitation
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="font-display text-xl font-bold text-slate-800">Guest List</h2>
+                  <p className="text-slate-400 text-xs mt-0.5">{guests.length} invitation{guests.length !== 1 ? 's' : ''} created</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {guests.map(guest => (
-                    <GuestCard
-                      key={guest.id}
-                      guest={guest}
-                      onEdit={() => handleEdit(guest)}
-                      onDelete={() => handleDelete(guest.id)}
-                      onPreview={() => setPreviewGuest(guest)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {guests.map(guest => (
+                  <GuestCard
+                    key={guest.id}
+                    guest={guest}
+                    onEdit={() => handleEdit(guest)}
+                    onDelete={() => handleDelete(guest.id)}
+                    onPreview={() => setPreviewGuest(guest)}
+                  />
+                ))}
+              </div>
+            </>
+          )
         ) : (
           <CheckInPage />
         )}
       </main>
 
-      {showForm && (
-        <GuestForm existing={editGuest} onClose={handleFormClose} />
-      )}
-
+      {showForm && <GuestForm existing={editGuest} onClose={handleFormClose} />}
       {previewGuest && (
         <InviteModal
           guest={previewGuest}
@@ -148,22 +131,18 @@ function TabBtn({ active, onClick, icon, label, count, live }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-        active
-          ? 'border-indigo-600 text-indigo-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'
+      className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
+        active ? 'border-amber-400 text-amber-400' : 'border-transparent text-slate-500 hover:text-slate-300'
       }`}
     >
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">{icon}</svg>
       {label}
       {count !== undefined && (
-        <span className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${active ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500'}`}>
+        <span className={`text-xs px-1.5 py-0.5 rounded font-semibold ${active ? 'bg-amber-400/20 text-amber-400' : 'bg-slate-700 text-slate-400'}`}>
           {count}
         </span>
       )}
-      {live && (
-        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-      )}
+      {live && <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />}
     </button>
   )
 }
