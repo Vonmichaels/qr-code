@@ -6,6 +6,14 @@ export const supabase = createClient(
 )
 
 export async function logScan(guest) {
+  const { data: existing } = await supabase
+    .from('scan_logs')
+    .select('id')
+    .eq('guest_id', guest.id)
+    .maybeSingle()
+
+  if (existing) return
+
   const familyMembers = guest.familyMembers || []
   const kids = guest.kids || []
   const totalPax = 1 + (familyMembers.length || guest.familyCount || 0) + kids.length
